@@ -3,9 +3,9 @@
  * Alessandro Rigano (Program in Molecular Medicine)
  * Caterina Strambio De Castillia (Program in Molecular Medicine)
  *
- * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team: 
- * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli, 
- * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban, 
+ * Created by the Open Microscopy Environment inteGrated Analysis (OMEGA) team:
+ * Alex Rigano, Caterina Strambio De Castillia, Jasmine Clark, Vanni Galli,
+ * Raffaello Giulietti, Loris Grossi, Eric Hunter, Tiziano Leidi, Jeremy Luban,
  * Ivo Sbalzarini and Mario Valle.
  *
  * Key contacts:
@@ -50,7 +50,7 @@ public class GenericMessageDialog extends GenericDialog {
 	private JButton close_btt;
 
 	public GenericMessageDialog(final RootPaneContainer parentContainer,
-	        final String title, final String label, final boolean modal) {
+			final String title, final String label, final boolean modal) {
 		super(parentContainer, title, modal);
 
 		int lines = OmegaStringUtilities.countLines(label, "<br>");
@@ -58,11 +58,12 @@ public class GenericMessageDialog extends GenericDialog {
 			lines = 4;
 		}
 		final Dimension textDim = OmegaStringUtilities.getStringSize(
-		        this.lbl.getGraphics(), this.lbl.getFont(), label);
+				this.lbl.getGraphics(), this.lbl.getFont(), label);
 		int width = 400;
 		final int height = (lines * textDim.height) + 50;
-		if (width < textDim.width) {
-			width = textDim.width;
+		final int linesWidth = textDim.width / lines;
+		if (width < linesWidth) {
+			width = linesWidth;
 		}
 
 		final Dimension dim = new Dimension(width, height);

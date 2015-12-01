@@ -27,8 +27,18 @@ public class OmegaVelocityAnalyzer implements Runnable {
 
 	public OmegaVelocityAnalyzer(final int tMax,
 	        final Map<OmegaTrajectory, List<OmegaSegment>> segments) {
+		this(null, tMax, segments);
+	}
+
+	public OmegaVelocityAnalyzer(
+			final OmegaMessageDisplayerPanelInterface displayerPanel,
+	        final int tMax,
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments) {
+		this.displayerPanel = displayerPanel;
+
 		this.tMax = tMax;
-		this.segments = segments;
+		this.segments = new LinkedHashMap<OmegaTrajectory, List<OmegaSegment>>(
+		        segments);
 		this.localSpeedMap = new LinkedHashMap<>();
 		this.localVelocityMap = new LinkedHashMap<>();
 		this.meanSpeedMap = new LinkedHashMap<>();
@@ -36,30 +46,23 @@ public class OmegaVelocityAnalyzer implements Runnable {
 		this.displayerPanel = null;
 	}
 
-	public OmegaVelocityAnalyzer(
-			final OmegaMessageDisplayerPanelInterface displayerPanel,
-	        final int tMax,
-			final Map<OmegaTrajectory, List<OmegaSegment>> segments) {
-		this(tMax, segments);
-		this.displayerPanel = displayerPanel;
-	}
-
 	@Override
 	public void run() {
-		final int counter = 1;
+		int counter = 1;
 		final int max = this.segments.keySet().size();
 		for (final OmegaTrajectory track : this.segments.keySet()) {
 			final List<OmegaROI> rois = track.getROIs();
 			if (this.displayerPanel != null) {
 				this.updateStatusAsync(
-				        "Processing trajectory " + track.getName() + " "
-				                + counter + "/" + max, false);
+				        "Processing velocity analysis, trajectory "
+				                + track.getName() + " " + counter + "/" + max,
+				        false, false);
 			}
 			for (final OmegaSegment segment : this.segments.get(track)) {
 				final int roiStart = rois.indexOf(segment.getStartingROI());
 				final int roiEnd = rois.indexOf(segment.getEndingROI());
 				final List<OmegaROI> segmentROIs = rois.subList(roiStart,
-				        roiEnd);
+				        roiEnd + 1);
 				final List<Double> localSpeeds = new ArrayList<>();
 				final List<Double> localVelocities = new ArrayList<>();
 				for (int t = 0; t < this.tMax; t++) {
@@ -79,10 +82,12 @@ public class OmegaVelocityAnalyzer implements Runnable {
 				        .computeMeanVelocity(segmentROIs);
 				this.meanSpeedMap.put(segment, meanSpeed);
 				this.meanVelocityMap.put(segment, meanVelocity);
+				counter++;
 			}
 		}
 		if (this.displayerPanel != null) {
-			this.updateStatusAsync("Processing ended", true);
+			this.updateStatusAsync("Processing velocity analysis ended", true,
+					false);
 		}
 	}
 
@@ -106,13 +111,15 @@ public class OmegaVelocityAnalyzer implements Runnable {
 		return this.meanVelocityMap;
 	}
 
-	private void updateStatusSync(final String msg, final boolean ended) {
+	private void updateStatusSync(final String msg, final boolean ended,
+			final boolean dialog) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
 					OmegaVelocityAnalyzer.this.displayerPanel
-					.updateMessageStatus(new AnalyzerEvent(msg, ended));
+					.updateMessageStatus(new AnalyzerEvent(msg, ended,
+							dialog));
 				}
 			});
 		} catch (final InvocationTargetException e) {
@@ -122,12 +129,14 @@ public class OmegaVelocityAnalyzer implements Runnable {
 		}
 	}
 
-	private void updateStatusAsync(final String msg, final boolean ended) {
+	private void updateStatusAsync(final String msg, final boolean ended,
+			final boolean dialog) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				OmegaVelocityAnalyzer.this.displayerPanel
-				.updateMessageStatus(new AnalyzerEvent(msg, ended));
+				.updateMessageStatus(new AnalyzerEvent(msg, ended,
+						dialog));
 			}
 		});
 	}

@@ -25,23 +25,10 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *******************************************************************************/
-package edu.umassmed.omega.commons.eventSystem.events;
+package edu.umassmed.omega.commons.eventSystem;
 
-import edu.umassmed.omega.commons.utilities.OmegaImporter;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaTrajectoryIOEvent;
 
-public class OmegaImporterEvent {
-
-	private final OmegaImporter source;
-
-	public OmegaImporterEvent() {
-		this(null);
-	}
-
-	public OmegaImporterEvent(final OmegaImporter source) {
-		this.source = source;
-	}
-
-	public OmegaImporter getSource() {
-		return this.source;
-	}
+public interface OmegaTrajectoryIOEventListener {
+	public void handleIOEvent(OmegaTrajectoryIOEvent event);
 }

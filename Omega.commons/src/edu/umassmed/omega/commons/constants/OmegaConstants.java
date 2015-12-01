@@ -80,6 +80,24 @@ public class OmegaConstants {
 	// ***SEGMENTATION***
 	public final static String OMEGA_SEGMENTATION_CURRENT = "Unsaved segmentation";
 
+	// ***DIFFUSIVITY***
+	public static final String PARAMETER_DIFFUSIVITY_WINDOW = "Window size";
+	public static final String PARAMETER_DIFFUSIVITY_LOG_OPTION = "Log option";
+	public static final String PARAMETER_ERROR_OPTION = "Error option";
+	public static final String PARAMETER_ERROR_SNR = "Select SNR estimation";
+
+	public static final String PARAMETER_DIFFUSIVITY_WINDOW_3 = "3";
+	public static final String PARAMETER_DIFFUSIVITY_WINDOW_5 = "5";
+	public static final String PARAMETER_DIFFUSIVITY_WINDOW_10 = "10";
+
+	public static final String PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_ONLY = "Log only";
+	public static final String PARAMETER_DIFFUSIVITY_LOG_OPTION_LINEAR_ONLY = "Linear only";
+	public static final String PARAMETER_DIFFUSIVITY_LOG_OPTION_LOG_AND_LINEAR = "Log and linear";
+
+	public static final String PARAMETER_ERROR_OPTION_ENABLED = "Error enabled";
+	public static final String PARAMETER_ERROR_OPTION_DISABLED = "Error disabled";
+	public static final String PARAMETER_ERROR_OPTION_ONLY = "Error only";
+
 	// ***COLORS***
 	/**
 	 *

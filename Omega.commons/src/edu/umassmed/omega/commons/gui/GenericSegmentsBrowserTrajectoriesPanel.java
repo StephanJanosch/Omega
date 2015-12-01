@@ -8,13 +8,13 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.OmegaImageManager;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
@@ -22,6 +22,7 @@ import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEventTBLoader;
 import edu.umassmed.omega.commons.runnable.TBROIThumbnailLoader;
 
 public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
@@ -38,7 +39,7 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 
 	private OmegaGateway gateway;
 	private OmegaImage img;
-	private final List<BufferedImage> buffImages;
+	// private final List<BufferedImage> buffImages;
 
 	private Thread frameLoaderThread;
 	private TBROIThumbnailLoader frameLoader;
@@ -47,9 +48,9 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 	private final boolean isSelectionEnabled;
 
 	public GenericSegmentsBrowserTrajectoriesPanel(
-	        final RootPaneContainer parent,
-	        final GenericSegmentsBrowserPanel sbPanel,
-	        final OmegaGateway gateway, final boolean isSelectionEnabled) {
+			final RootPaneContainer parent,
+			final GenericSegmentsBrowserPanel sbPanel,
+			final OmegaGateway gateway, final boolean isSelectionEnabled) {
 		super(parent);
 		this.sbPanel = sbPanel;
 
@@ -62,7 +63,7 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 
 		this.gateway = gateway;
 		this.img = null;
-		this.buffImages = new ArrayList<BufferedImage>();
+		// this.buffImages = new ArrayList<BufferedImage>();
 
 		this.frameLoaderThread = null;
 		this.frameLoader = null;
@@ -155,13 +156,14 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 			final OmegaSegment segment = this.findSegment(y);
 			final int yPos = GenericBrowserPanel.SPOT_SPACE_DEFAULT * y;
 			final int adjY = yPos;
-			if (this.sbPanel.getSelectedSegments().containsKey(track)) {
-				if (this.sbPanel.getSelectedSegments().get(track)
-				        .contains(segment)) {
+			final Map<OmegaTrajectory, List<OmegaSegment>> segments = this.sbPanel
+			        .getSelectedSegments();
+			if (segments.containsKey(track)) {
+				if (segments.get(track).contains(segment)) {
 					g2D.setBackground(OmegaConstants
-					        .getDefaultSelectionBackgroundColor());
+							.getDefaultSelectionBackgroundColor());
 					g2D.clearRect(0, adjY, this.getWidth(),
-					        GenericBrowserPanel.SPOT_SPACE_DEFAULT);
+							GenericBrowserPanel.SPOT_SPACE_DEFAULT);
 					g2D.setBackground(Color.white);
 				}
 			}
@@ -186,9 +188,9 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 		this.segmentsTracksMap.clear();
 		int y = 0;
 		for (final OmegaTrajectory track : this.sbPanel.getShownSegments()
-				.keySet()) {
+		        .keySet()) {
 			for (final OmegaSegment segm : this.sbPanel.getShownSegments().get(
-					track)) {
+			        track)) {
 				final List<OmegaROI> rois = track.getROIs();
 				final int yPos = ((space * y) + (space / 4)) - border;
 				if (!this.trajectoriesMap.containsKey(yPos)) {
@@ -203,34 +205,39 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 					final OmegaROI roi = rois.get(x);
 					final int roiIndex = roi.getFrameIndex();
 					BufferedImage bufferedImage = null;
-					if (this.buffImages.size() > roiIndex) {
-						bufferedImage = this.buffImages.get(roiIndex);
+					final List<BufferedImage> buffImages = OmegaImageManager
+							.getImages(this.img.getElementID());
+					// if (this.buffImages.size() > roiIndex) {
+					// bufferedImage = this.buffImages.get(roiIndex);
+					// }
+					if ((buffImages != null) && (buffImages.size() > roiIndex)) {
+						bufferedImage = buffImages.get(roiIndex);
 					}
 					final int xPos = ((space * roiIndex) - (size / 2) - border)
-							+ (space / 2);
+					        + (space / 2);
 					final Point p = new Point(xPos, yPos);
 					this.particlesMap.put(p, roi);
 					if (this.sbPanel
-							.getSegmentColor(segm.getSegmentationType()) == null) {
+					        .getSegmentColor(segm.getSegmentationType()) == null) {
 						// TODO generate random colors
 					}
 					final Color color = this.sbPanel.getSegmentColor(segm
-					        .getSegmentationType());
+							.getSegmentationType());
 					if (roiIndex < segm.getEndingROI().getFrameIndex()) {
 						final OmegaROI nextROI = rois.get(x + 1);
 						final int nextROIIndex = nextROI.getFrameIndex();
 						final int xNextPos = ((space * nextROIIndex)
-								- (size / 2) - border)
-								+ (space / 2);
+						        - (size / 2) - border)
+						        + (space / 2);
 						final Point p2 = new Point(xNextPos, yPos);
 						this.drawConnection(g2D, p, p2, color);
 					}
 					if ((bufferedImage == null)
-							|| !this.sbPanel.isShowParticles()) {
+					        || !this.sbPanel.isShowParticles()) {
 						this.drawParticleSquare(g2D, p, color);
 					} else {
 						this.drawParticleImage(g2D, p, color, bufferedImage,
-						        roi);
+								roi);
 					}
 				}
 				y++;
@@ -239,7 +246,7 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 	}
 
 	private void drawConnection(final Graphics2D g2D, final Point p,
-	        final Point p2, final Color c) {
+			final Point p2, final Color c) {
 		final int size = GenericBrowserPanel.SPOT_SIZE_DEFAULT;
 		g2D.setColor(c);
 		final int width = p2.x - p.x;
@@ -249,28 +256,28 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 	}
 
 	private void drawParticleSquare(final Graphics2D g2D, final Point p,
-	        final Color color) {
+			final Color color) {
 		final int border = GenericBrowserPanel.TRAJECTORY_SQUARE_BORDER;
 		final int spotSize = GenericBrowserPanel.SPOT_SIZE_DEFAULT
-		        + (GenericBrowserPanel.TRAJECTORY_SQUARE_BORDER * 2);
+				+ (GenericBrowserPanel.TRAJECTORY_SQUARE_BORDER * 2);
 		g2D.setColor(color);
 		g2D.fillRect(p.x - border, p.y - border, spotSize, spotSize);
 		g2D.setColor(Color.black);
 	}
 
 	private void drawParticleImage(final Graphics2D g2D, final Point p,
-	        final Color color, final BufferedImage bufferedImage,
-	        final OmegaROI roi) {
+			final Color color, final BufferedImage bufferedImage,
+			final OmegaROI roi) {
 		final int radius = this.sbPanel.getRadius();
 		final int border = GenericBrowserPanel.TRAJECTORY_SQUARE_BORDER;
 		final int spotSize = GenericBrowserPanel.SPOT_SIZE_DEFAULT
-		        + (GenericBrowserPanel.TRAJECTORY_SQUARE_BORDER * 2);
+				+ (GenericBrowserPanel.TRAJECTORY_SQUARE_BORDER * 2);
 		final double xD = roi.getX();
 		final double yD = roi.getY();
 		final int x1 = new BigDecimal(String.valueOf(xD)).setScale(0,
-		        BigDecimal.ROUND_HALF_UP).intValue();
+				BigDecimal.ROUND_HALF_UP).intValue();
 		final int y1 = new BigDecimal(String.valueOf(yD)).setScale(0,
-		        BigDecimal.ROUND_HALF_UP).intValue();
+				BigDecimal.ROUND_HALF_UP).intValue();
 		g2D.setColor(color);
 		g2D.fillRect(p.x - border, p.y - border, spotSize, spotSize);
 		g2D.setColor(Color.black);
@@ -279,9 +286,9 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 		final int xS2 = x1 + radius;
 		final int yS2 = y1 + radius;
 		g2D.drawImage(bufferedImage, p.x, p.y, p.x
-		        + (GenericBrowserPanel.SPOT_SIZE_DEFAULT), p.y
-		        + (GenericBrowserPanel.SPOT_SIZE_DEFAULT), xS1, yS1, xS2, yS2,
-				this);
+				+ (GenericBrowserPanel.SPOT_SIZE_DEFAULT), p.y
+				+ (GenericBrowserPanel.SPOT_SIZE_DEFAULT), xS1, yS1, xS2, yS2,
+		        this);
 	}
 
 	@Override
@@ -293,11 +300,11 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 		final Graphics2D g2D = (Graphics2D) g;
 		g2D.setBackground(Color.white);
 		g2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-		        RenderingHints.VALUE_ANTIALIAS_ON);
+				RenderingHints.VALUE_ANTIALIAS_ON);
 		g2D.setRenderingHint(RenderingHints.KEY_RENDERING,
-		        RenderingHints.VALUE_RENDER_QUALITY);
+				RenderingHints.VALUE_RENDER_QUALITY);
 		g2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-		        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 		g2D.clearRect(0, 0, this.getWidth(), this.getHeight());
 
 		this.drawAlternateTimeframeBackground(g2D);
@@ -318,30 +325,42 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 		if ((this.img == img))
 			return;
 		this.img = img;
-		this.buffImages.clear();
+		// this.buffImages.clear();
 		if ((img == null)
-		        || ((this.frameLoaderThread != null) && this.frameLoaderThread
-		                .isAlive())) {
+				|| ((this.frameLoaderThread != null) && this.frameLoaderThread
+						.isAlive())) {
 			this.frameLoader.kill();
 			// try {
-			// this.frameLoaderThread.join();
+				// this.frameLoaderThread.join();
 			// } catch (final InterruptedException ex) {
 			// OmegaLogFileManager.handleCoreException(ex);
 			// }
 		}
+		if (OmegaImageManager.getImages(img.getElementID()) != null) {
+			this.sbPanel.updateMessageStatus(new OmegaMessageEventTBLoader(
+			        "All frames loaded", true));
+			this.frameLoader = null;
+			return;
+		}
 		this.frameLoader = new TBROIThumbnailLoader(this.sbPanel, this.gateway,
-		        this.img);
+				this.img);
 		this.frameLoaderThread = new Thread(this.frameLoader);
 		this.frameLoaderThread.setName(this.frameLoader.getClass()
-		        .getSimpleName());
+				.getSimpleName());
 		OmegaLogFileManager
-		        .registerAsExceptionHandlerOnThread(this.frameLoaderThread);
+		.registerAsExceptionHandlerOnThread(this.frameLoaderThread);
 		this.frameLoaderThread.start();
 	}
 
 	public void loadBufferedImages() {
-		this.buffImages.clear();
-		this.buffImages.addAll(this.frameLoader.getImages());
+		// TODO find a way to 'cache' images during the thread instead of here
+		// this.buffImages.clear();
+		if (this.frameLoader != null) {
+			final List<BufferedImage> images = this.frameLoader.getImages();
+			OmegaImageManager.clearImages();
+			OmegaImageManager.saveImages(this.img.getElementID(), images);
+		}
+		// this.buffImages.addAll(this.frameLoader.getImages());
 		this.repaint();
 	}
 
@@ -370,9 +389,9 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 
 	private OmegaTrajectory findTrack(int index) {
 		for (final OmegaTrajectory track : this.sbPanel.getShownSegments()
-		        .keySet()) {
+				.keySet()) {
 			final List<OmegaSegment> segments = this.sbPanel.getShownSegments()
-			        .get(track);
+					.get(track);
 			if (index < segments.size())
 				return track;
 			index -= segments.size();
@@ -382,9 +401,9 @@ public class GenericSegmentsBrowserTrajectoriesPanel extends GenericPanel {
 
 	private OmegaSegment findSegment(int index) {
 		for (final OmegaTrajectory track : this.sbPanel.getShownSegments()
-		        .keySet()) {
+				.keySet()) {
 			final List<OmegaSegment> segments = this.sbPanel.getShownSegments()
-			        .get(track);
+					.get(track);
 			if (index < segments.size())
 				return segments.get(index);
 			index -= segments.size();

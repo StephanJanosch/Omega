@@ -6,7 +6,6 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaImageConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoaderPluginInterface;
@@ -14,6 +13,7 @@ import edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsum
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectImagePluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
 
 public abstract class OmegaTrajectoriesRelinkingPlugin extends
@@ -24,7 +24,7 @@ public abstract class OmegaTrajectoriesRelinkingPlugin extends
         OmegaLoadedAnalysisConsumerPluginInterface,
         OmegaImageConsumerPluginInterface,
         OmegaOrphanedAnalysisConsumerPluginInterface,
-        OmegaLoaderPluginInterface {
+        OmegaLoaderPluginInterface, OmegaSelectTrajectoriesInterface {
 
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	private OrphanedAnalysisContainer orphanedAnalysis;
@@ -85,9 +85,6 @@ public abstract class OmegaTrajectoriesRelinkingPlugin extends
 	public OmegaGateway getGateway() {
 		return this.gateway;
 	}
-
-	public abstract void updateTrajectories(List<OmegaTrajectory> trajectories,
-	        boolean selection);
 
 	public abstract void selectCurrentTrajectoriesRelinkingRun(
 	        OmegaAnalysisRun analysisRun);

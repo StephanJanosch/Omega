@@ -30,36 +30,35 @@ package edu.umassmed.omega.commons.eventSystem.events;
 import java.util.List;
 import java.util.Map;
 
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRunContainer;
 import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
-import edu.umassmed.omega.commons.utilities.OmegaImporter;
+import edu.umassmed.omega.commons.utilities.OmegaTrajectoryIOUtility;
 
 public class OmegaImporterEventResultsParticleTracking extends
-OmegaImporterEvent {
+        OmegaTrajectoryIOEvent {
 
+	private final OmegaAnalysisRunContainer container;
 	private final Map<OmegaFrame, List<OmegaROI>> resultingParticles;
 	private final Map<OmegaROI, Map<String, Object>> resultingParticlesValues;
 	private final List<OmegaTrajectory> resultingTrajectories;
 
 	public OmegaImporterEventResultsParticleTracking(
+			final OmegaTrajectoryIOUtility source,
+	        final OmegaAnalysisRunContainer container,
 			final Map<OmegaFrame, List<OmegaROI>> resultingParticles,
-			final List<OmegaTrajectory> resultingTrajectories,
-	        final Map<OmegaROI, Map<String, Object>> resultingParticlesValues) {
-		this(null, resultingParticles, resultingTrajectories,
-		        resultingParticlesValues);
-	}
-
-	public OmegaImporterEventResultsParticleTracking(
-	        final OmegaImporter source,
-	        final Map<OmegaFrame, List<OmegaROI>> resultingParticles,
-			final List<OmegaTrajectory> resultingTrajectories,
-	        final Map<OmegaROI, Map<String, Object>> resultingParticlesValues) {
-		super(source);
-
+	        final List<OmegaTrajectory> resultingTrajectories,
+			final Map<OmegaROI, Map<String, Object>> resultingParticlesValues) {
+		super(source, OmegaTrajectoryIOEvent.INPUT);
+		this.container = container;
 		this.resultingParticles = resultingParticles;
 		this.resultingParticlesValues = resultingParticlesValues;
 		this.resultingTrajectories = resultingTrajectories;
+	}
+
+	public OmegaAnalysisRunContainer getContainer() {
+		return this.container;
 	}
 
 	public Map<OmegaFrame, List<OmegaROI>> getResultingParticles() {

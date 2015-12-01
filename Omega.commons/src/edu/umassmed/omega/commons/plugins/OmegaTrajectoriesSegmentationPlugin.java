@@ -7,7 +7,6 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisConta
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
-import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaImageConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoaderPluginInterface;
@@ -15,6 +14,7 @@ import edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsum
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectImagePluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesSegmentationRunPluginInterface;
 
@@ -27,7 +27,7 @@ public abstract class OmegaTrajectoriesSegmentationPlugin extends
         OmegaLoadedAnalysisConsumerPluginInterface,
         OmegaImageConsumerPluginInterface,
         OmegaOrphanedAnalysisConsumerPluginInterface,
-        OmegaLoaderPluginInterface {
+        OmegaLoaderPluginInterface, OmegaSelectTrajectoriesInterface {
 
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	private OrphanedAnalysisContainer orphanedAnalysis;
@@ -104,9 +104,6 @@ public abstract class OmegaTrajectoriesSegmentationPlugin extends
 
 	public abstract void updateSegmentationTypesList(
 	        List<OmegaSegmentationTypes> segmTypesList);
-
-	public abstract void updateTrajectories(List<OmegaTrajectory> trajectories,
-	        boolean selection);
 
 	public abstract void selectCurrentTrajectoriesSegmentationRun(
 	        OmegaAnalysisRun analysisRun);

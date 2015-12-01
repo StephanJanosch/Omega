@@ -8,19 +8,20 @@ import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.RootPaneContainer;
 
+import edu.umassmed.omega.commons.OmegaImageManager;
 import edu.umassmed.omega.commons.OmegaLogFileManager;
 import edu.umassmed.omega.commons.constants.OmegaConstants;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaROI;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
+import edu.umassmed.omega.commons.eventSystem.events.OmegaMessageEventTBLoader;
 import edu.umassmed.omega.commons.runnable.TBROIThumbnailLoader;
 
 public class GenericTrajectoriesBrowserTrajectoriesPanel extends GenericPanel {
@@ -34,7 +35,7 @@ public class GenericTrajectoriesBrowserTrajectoriesPanel extends GenericPanel {
 
 	private OmegaGateway gateway;
 	private OmegaImage img;
-	private final List<BufferedImage> buffImages;
+	// private final List<BufferedImage> buffImages;
 
 	private Thread frameLoaderThread;
 	private TBROIThumbnailLoader frameLoader;
@@ -53,7 +54,7 @@ public class GenericTrajectoriesBrowserTrajectoriesPanel extends GenericPanel {
 
 		this.gateway = gateway;
 		this.img = null;
-		this.buffImages = new ArrayList<BufferedImage>();
+		// this.buffImages = new ArrayList<BufferedImage>();
 
 		this.frameLoaderThread = null;
 		this.frameLoader = null;
@@ -157,8 +158,13 @@ public class GenericTrajectoriesBrowserTrajectoriesPanel extends GenericPanel {
 				final OmegaROI roi = rois.get(x);
 				final int roiIndex = roi.getFrameIndex();
 				BufferedImage bufferedImage = null;
-				if (this.buffImages.size() > roiIndex) {
-					bufferedImage = this.buffImages.get(roiIndex);
+				final List<BufferedImage> buffImages = OmegaImageManager
+						.getImages(this.img.getElementID());
+				// if (this.buffImages.size() > roiIndex) {
+				// bufferedImage = this.buffImages.get(roiIndex);
+				// }
+				if ((buffImages != null) && (buffImages.size() > roiIndex)) {
+					bufferedImage = buffImages.get(roiIndex);
 				}
 				final int xPos = ((space * roiIndex) - (size / 2) - border)
 						+ (space / 2);
@@ -313,7 +319,7 @@ public class GenericTrajectoriesBrowserTrajectoriesPanel extends GenericPanel {
 		if ((this.img == img))
 			return;
 		this.img = img;
-		this.buffImages.clear();
+		// this.buffImages.clear();
 		if ((img == null)
 				|| ((this.frameLoaderThread != null) && this.frameLoaderThread
 						.isAlive())) {
@@ -323,6 +329,12 @@ public class GenericTrajectoriesBrowserTrajectoriesPanel extends GenericPanel {
 			// } catch (final InterruptedException ex) {
 			// OmegaLogFileManager.handleCoreException(ex);
 			// }
+		}
+		if (OmegaImageManager.getImages(img.getElementID()) != null) {
+			this.tbPanel.updateMessageStatus(new OmegaMessageEventTBLoader(
+			        "All frames loaded", true));
+			this.frameLoader = null;
+			return;
 		}
 		this.frameLoader = new TBROIThumbnailLoader(this.tbPanel, this.gateway,
 				this.img);
@@ -335,8 +347,14 @@ public class GenericTrajectoriesBrowserTrajectoriesPanel extends GenericPanel {
 	}
 
 	public void loadBufferedImages() {
-		this.buffImages.clear();
-		this.buffImages.addAll(this.frameLoader.getImages());
+		// TODO find a way to 'cache' images during the thread instead of here
+		// this.buffImages.clear();
+		if (this.frameLoader != null) {
+			final List<BufferedImage> images = this.frameLoader.getImages();
+			OmegaImageManager.clearImages();
+			OmegaImageManager.saveImages(this.img.getElementID(), images);
+		}
+		// this.buffImages.addAll(this.frameLoader.getImages());
 		this.repaint();
 	}
 

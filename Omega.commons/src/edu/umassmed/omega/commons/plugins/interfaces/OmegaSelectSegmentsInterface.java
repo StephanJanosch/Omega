@@ -1,4 +1,4 @@
-package edu.umassmed.omega.commons.gui.interfaces;
+package edu.umassmed.omega.commons.plugins.interfaces;
 
 import java.util.List;
 import java.util.Map;
@@ -7,12 +7,9 @@ import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegmentationTypes;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 
-public interface GenericImageCanvasContainer {
-
-	void sendCoreEventTrajectories(List<OmegaTrajectory> trajectories,
-	        boolean selection);
-
-	void sendCoreEventSegments(
+public interface OmegaSelectSegmentsInterface extends
+OmegaSelectTrajectoriesInterface {
+	public void updateSegments(
 	        Map<OmegaTrajectory, List<OmegaSegment>> segments,
-	        OmegaSegmentationTypes segmTypes, boolean selection);
+	        OmegaSegmentationTypes segmTypes, boolean isSelection);
 }

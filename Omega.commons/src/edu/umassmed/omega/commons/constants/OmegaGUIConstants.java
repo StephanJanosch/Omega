@@ -32,9 +32,9 @@ public class OmegaGUIConstants {
 	public static final String SIDEPANEL_INFO_DIM_ZTC = "Dimensions (ZTC): ";
 	public static final String SIDEPANEL_INFO_PIXELTYPE = "Pixel Type: ";
 	public static final String SIDEPANEL_INFO_PIXELSIZES = "Pixel Sizes (XY) "
-	        + OmegaConstantsMathSymbols.MU + "m :";
+			+ OmegaConstantsMathSymbols.MU + "m :";
 	public static final String SIDEPANEL_INFO_PIXELSIZES_Z = "Pixel Sizes (XYZ) "
-	        + OmegaConstantsMathSymbols.MU + "m :";
+			+ OmegaConstantsMathSymbols.MU + "m :";
 
 	public static final String INFO_EXECUTED = "Executed: ";
 
@@ -70,6 +70,10 @@ public class OmegaGUIConstants {
 	public static final String MENU_FILE = "File";
 	public static final String MENU_FILE_IMPORT_TRACKS = "Import tracks";
 	public static final String MENU_FILE_IMPORT_TRACKS_TT = "Import tracks results from file";
+	public static final String MENU_FILE_EXPORT_TRACKS = "Export tracks";
+	public static final String MENU_FILE_EXPORT_TRACKS_TT = "Export tracks results to file";
+	public static final String MENU_FILE_EXPORT_DIFF = "Export diffusivity results";
+	public static final String MENU_FILE_EXPORT_DIFF_TT = "Export diffusivity results to file";
 	public static final String MENU_FILE_LOAD = "Load";
 	public static final String MENU_FILE_LOAD_TT = "Load analysis results from database";
 	public static final String MENU_FILE_SAVE = "Save";
@@ -107,6 +111,8 @@ public class OmegaGUIConstants {
 	public static final String PLUGIN_PARAMETERS_LINKING_ADVANCED = "Particle Linking Advanced Options";
 	public static final String PLUGIN_PARAMETERS_GENERAL = "General Parameters";
 	public static final String PLUGIN_PARAMETERS_SNR = "SNR Estimation Parameters";
+	public static final String PLUGIN_PARAMETERS_TMD = "Diffusivity Estimation Parameters";
+	public static final String PLUGIN_PARAMETERS_TMDE = "Error Estimation Parameters";
 
 	public static final String TRACK_BROWSER_SHOW_SPOT_THUMB = "Show Spots Thumbnail";
 	public static final String TRACK_BROWSER_HIDE_SPOT_THUMB = "Hide Spots Thumbnail";

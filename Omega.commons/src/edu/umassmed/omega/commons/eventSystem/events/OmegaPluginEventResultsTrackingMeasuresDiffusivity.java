@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresDiffusivityRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaElement;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
 import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
@@ -24,6 +26,11 @@ OmegaPluginEventResultsTrackingMeasures {
 	private final Map<OmegaSegment, Double[]> gammaMap;
 	private final Map<OmegaSegment, Double[]> smssFromLogMap;
 	private final Map<OmegaSegment, Double[]> smssMap;
+	private final Map<OmegaSegment, Double[]> errors;
+	private final Map<OmegaSegment, Double[]> errorsFromLog;
+
+	private final OmegaSNRRun snrRun;
+	private final OmegaTrackingMeasuresDiffusivityRun diffusivityRun;
 
 	public OmegaPluginEventResultsTrackingMeasuresDiffusivity(
 			final OmegaPlugin source, final OmegaElement element,
@@ -39,7 +46,11 @@ OmegaPluginEventResultsTrackingMeasures {
 			final Map<OmegaSegment, Double[]> gamma,
 			final Map<OmegaSegment, Double[]> gammaLog,
 			final Map<OmegaSegment, Double[]> smss,
-			final Map<OmegaSegment, Double[]> smssLog) {
+			final Map<OmegaSegment, Double[]> smssLog,
+			final Map<OmegaSegment, Double[]> errors,
+			final Map<OmegaSegment, Double[]> errorsLog,
+			final OmegaSNRRun snrRun,
+			final OmegaTrackingMeasuresDiffusivityRun diffusivityRun) {
 		super(source, element, params, segments);
 		this.nyMap = ny;
 		this.muMap = mu;
@@ -52,6 +63,10 @@ OmegaPluginEventResultsTrackingMeasures {
 		this.gammaFromLogMap = gammaLog;
 		this.smssMap = smss;
 		this.smssFromLogMap = smssLog;
+		this.errors = errors;
+		this.errorsFromLog = errorsLog;
+		this.snrRun = snrRun;
+		this.diffusivityRun = diffusivityRun;
 	}
 
 	public Map<OmegaSegment, Double[]> getResultingNy() {
@@ -96,5 +111,21 @@ OmegaPluginEventResultsTrackingMeasures {
 
 	public Map<OmegaSegment, Double[]> getResultingSmss() {
 		return this.smssMap;
+	}
+
+	public Map<OmegaSegment, Double[]> getErrors() {
+		return this.errors;
+	}
+
+	public Map<OmegaSegment, Double[]> getErrorsFromLog() {
+		return this.errorsFromLog;
+	}
+
+	public OmegaSNRRun getSNRRun() {
+		return this.snrRun;
+	}
+
+	public OmegaTrackingMeasuresDiffusivityRun getTrackigMeasuresDiffusivityRun() {
+		return this.diffusivityRun;
 	}
 }

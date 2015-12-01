@@ -6,7 +6,6 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaAnalysisRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OrphanedAnalysisContainer;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.imageDBConnectionElements.OmegaGateway;
-import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaImageConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoadedAnalysisConsumerPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaLoaderPluginInterface;
@@ -14,11 +13,12 @@ import edu.umassmed.omega.commons.plugins.interfaces.OmegaOrphanedAnalysisConsum
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectImagePluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleDetectionRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectParticleLinkingRunPluginInterface;
+import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectSegmentsInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesRelinkingRunPluginInterface;
 import edu.umassmed.omega.commons.plugins.interfaces.OmegaSelectTrajectoriesSegmentationRunPluginInterface;
 
-public abstract class OmegaStatsPlugin extends OmegaAlgorithmPlugin
-        implements OmegaSelectImagePluginInterface,
+public abstract class OmegaStatsPlugin extends OmegaAlgorithmPlugin implements
+OmegaSelectImagePluginInterface,
         OmegaSelectParticleDetectionRunPluginInterface,
         OmegaSelectParticleLinkingRunPluginInterface,
         OmegaSelectTrajectoriesRelinkingRunPluginInterface,
@@ -26,7 +26,7 @@ public abstract class OmegaStatsPlugin extends OmegaAlgorithmPlugin
         OmegaLoadedAnalysisConsumerPluginInterface,
         OmegaImageConsumerPluginInterface,
         OmegaOrphanedAnalysisConsumerPluginInterface,
-        OmegaLoaderPluginInterface {
+        OmegaLoaderPluginInterface, OmegaSelectSegmentsInterface {
 
 	private List<OmegaAnalysisRun> loadedAnalysisRuns;
 	private OrphanedAnalysisContainer orphanedAnalysis;
@@ -87,7 +87,4 @@ public abstract class OmegaStatsPlugin extends OmegaAlgorithmPlugin
 	public OmegaGateway getGateway() {
 		return this.gateway;
 	}
-
-	public abstract void updateTrajectories(List<OmegaTrajectory> trajectories,
-	        boolean selection);
 }

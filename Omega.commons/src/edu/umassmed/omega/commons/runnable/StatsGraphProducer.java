@@ -355,7 +355,7 @@ public abstract class StatsGraphProducer implements Runnable {
 				final int roiStart = rois.indexOf(segment.getStartingROI());
 				final int roiEnd = rois.indexOf(segment.getEndingROI());
 				final List<OmegaROI> segmentROIs = rois.subList(roiStart,
-						roiEnd);
+						roiEnd + 1);
 				for (final OmegaROI roi : segmentROIs) {
 					final OmegaParticle particle = (OmegaParticle) roi;
 					final int newIndex = particle.getFrameIndex();
@@ -417,7 +417,7 @@ public abstract class StatsGraphProducer implements Runnable {
 					final int roiStart = rois.indexOf(segment.getStartingROI());
 					final int roiEnd = rois.indexOf(segment.getEndingROI());
 					final List<OmegaROI> segmentROIs = rois.subList(roiStart,
-					        roiEnd);
+					        roiEnd + 1);
 					final OmegaROI roi = segmentROIs
 					        .get(segmentROIs.size() - 1);
 					value = this.getValue(segment, roi)[0];
@@ -502,7 +502,7 @@ public abstract class StatsGraphProducer implements Runnable {
 					final int roiStart = rois.indexOf(segment.getStartingROI());
 					final int roiEnd = rois.indexOf(segment.getEndingROI());
 					final List<OmegaROI> segmentROIs = rois.subList(roiStart,
-					        roiEnd);
+					        roiEnd + 1);
 					for (final OmegaROI roi : segmentROIs) {
 						if (this.isTerminated())
 							return null;
@@ -871,7 +871,7 @@ public abstract class StatsGraphProducer implements Runnable {
 				final int roiStart = rois.indexOf(segment.getStartingROI());
 				final int roiEnd = rois.indexOf(segment.getEndingROI());
 				final List<OmegaROI> segmentROIs = rois.subList(roiStart,
-				        roiEnd);
+				        roiEnd + 1);
 				for (final OmegaROI roi : segmentROIs) {
 					if (this.isTerminated)
 						return null;

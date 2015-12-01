@@ -1,4 +1,4 @@
-package edu.umassmed.omega.commons.data.utilities;
+package edu.umassmed.omega.commons.trajectoryTool;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -25,11 +25,12 @@ public class OmegaTracksImporterTest {
 		final File omegaDDir = new File(omegaDDirName);
 		omegaDDir.mkdir();
 		final String subDirName1 = "tracks_[\\d-]+";
-		final String subDirName2 = "L_[\\d]+_SMSS_[\\d-]+_D_[\\d-]+";
+		final String subDirName2 = "L_20_SMSS_[\\d-]+_D_[\\d-]+";
+		// final String subDirName2 = "L_[\\d]+_SMSS_[\\d-]+_D_[\\d-]+";
 		final List<String> dataOrder = new ArrayList<String>();
-		dataOrder.add(OmegaTracksImporter.PARTICLE_FRAMEINDEX);
-		dataOrder.add(OmegaTracksImporter.PARTICLE_XCOORD);
-		dataOrder.add(OmegaTracksImporter.PARTICLE_YCOORD);
+		dataOrder.add(OmegaTracksExporter.PARTICLE_FRAMEINDEX);
+		dataOrder.add(OmegaTracksExporter.PARTICLE_XCOORD);
+		dataOrder.add(OmegaTracksExporter.PARTICLE_YCOORD);
 		final String fileName = "track_[\\d]+.out";
 		final String trajIdent = null;
 		final String particleIdent = null;
@@ -64,6 +65,7 @@ public class OmegaTracksImporterTest {
 					final Double D = Double.valueOf(vals2[5].replace("-", "."));
 					System.out.println("Import SNR " + snr + " L " + L
 							+ " SMSS " + SMSS + " D " + D);
+					oti.reset();
 					oti.importTrajectories(fileName, trajIdent, particleIdent,
 							false, nonParticleIdent, particleSep, dataOrder, f2);
 					final List<OmegaTrajectory> tracks = oti.getTracks();

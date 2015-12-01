@@ -35,6 +35,8 @@ import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -56,7 +58,10 @@ import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParameter;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleDetectionRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaParticleLinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaSNRRun;
-import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresDiffusivityRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresIntensityRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresMobilityRun;
+import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrackingMeasuresVelocityRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesRelinkingRun;
 import edu.umassmed.omega.commons.data.analysisRunElements.OmegaTrajectoriesSegmentationRun;
 import edu.umassmed.omega.commons.data.coreElements.OmegaDataset;
@@ -64,7 +69,10 @@ import edu.umassmed.omega.commons.data.coreElements.OmegaFrame;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImage;
 import edu.umassmed.omega.commons.data.coreElements.OmegaImagePixels;
 import edu.umassmed.omega.commons.data.coreElements.OmegaProject;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaSegment;
+import edu.umassmed.omega.commons.data.trajectoryElements.OmegaTrajectory;
 import edu.umassmed.omega.commons.utilities.OmegaAnalysisRunContainerUtilities;
+import edu.umassmed.omega.commons.utilities.OmegaMathsUtilities;
 import edu.umassmed.omega.commons.utilities.OmegaStringUtilities;
 
 public class GenericAnalysisInformationPanel extends GenericScrollPane {
@@ -258,8 +266,14 @@ public class GenericAnalysisInformationPanel extends GenericScrollPane {
 	        final OmegaAnalysisRun analysisRun) throws BadLocationException {
 		if (analysisRun instanceof OmegaSNRRun) {
 			this.appendAdditionaSNRInformation((OmegaSNRRun) analysisRun);
-		} else if (analysisRun instanceof OmegaTrackingMeasuresRun) {
-			this.appendAdditionalTMInformation((OmegaTrackingMeasuresRun) analysisRun);
+		} else if (analysisRun instanceof OmegaTrackingMeasuresDiffusivityRun) {
+			this.appendAdditionalTMDInformation((OmegaTrackingMeasuresDiffusivityRun) analysisRun);
+		} else if (analysisRun instanceof OmegaTrackingMeasuresIntensityRun) {
+			this.appendAdditionalTMIInformation((OmegaTrackingMeasuresIntensityRun) analysisRun);
+		} else if (analysisRun instanceof OmegaTrackingMeasuresMobilityRun) {
+			this.appendAdditionalTMMInformation((OmegaTrackingMeasuresMobilityRun) analysisRun);
+		} else if (analysisRun instanceof OmegaTrackingMeasuresVelocityRun) {
+			this.appendAdditionalTMVInformation((OmegaTrackingMeasuresVelocityRun) analysisRun);
 		} else if (analysisRun instanceof OmegaTrajectoriesSegmentationRun) {
 			this.appendAdditionalTSInformation((OmegaTrajectoriesSegmentationRun) analysisRun);
 		} else if (analysisRun instanceof OmegaTrajectoriesRelinkingRun) {
@@ -275,19 +289,61 @@ public class GenericAnalysisInformationPanel extends GenericScrollPane {
 
 	}
 
-	private void appendAdditionalTMInformation(
-	        final OmegaTrackingMeasuresRun analysisRun) {
+	private void appendAdditionalTMVInformation(
+	        final OmegaTrackingMeasuresVelocityRun analysisRun) {
+
+	}
+
+	private void appendAdditionalTMMInformation(
+	        final OmegaTrackingMeasuresMobilityRun analysisRun) {
+
+	}
+
+	private void appendAdditionalTMIInformation(
+	        final OmegaTrackingMeasuresIntensityRun analysisRun) {
+
+	}
+
+	private void appendAdditionalTMDInformation(
+	        final OmegaTrackingMeasuresDiffusivityRun analysisRun) {
 
 	}
 
 	private void appendAdditionalTSInformation(
-	        final OmegaTrajectoriesSegmentationRun analysisRun) {
+	        final OmegaTrajectoriesSegmentationRun analysisRun)
+					throws BadLocationException {
+		final Map<OmegaTrajectory, List<OmegaSegment>> segments = analysisRun
+		        .getResultingSegments();
+		this.appendString("Tracks: ", this.bold);
+		final int tracksC = segments.keySet().size();
+		final String tracks = String.valueOf(tracksC);
+		this.appendString(tracks, this.normal);
+		this.appendNewline();
+		this.appendString("Segments total: ", this.bold);
+		final Double segmentsN[] = new Double[tracksC];
+		int i = 0;
+		int segmentsT = 0;
+		for (final OmegaTrajectory track : segments.keySet()) {
+			final int segmN = segments.get(track).size();
+			segmentsN[i] = (double) segmN;
+			segmentsT += segmN;
+			i++;
+		}
+		this.appendString(String.valueOf(segmentsT), this.normal);
+		this.appendNewline();
+		this.appendString("Mean segments per track: ", this.bold);
+		final Double segmMean = OmegaMathsUtilities.mean(segmentsN);
+		this.appendString(String.valueOf(segmMean), this.normal);
 
 	}
 
 	private void appendAdditionalTEInformation(
-	        final OmegaTrajectoriesRelinkingRun analysisRun) {
-
+	        final OmegaTrajectoriesRelinkingRun analysisRun)
+	        throws BadLocationException {
+		this.appendString("Tracks: ", this.bold);
+		final String tracks = String.valueOf(analysisRun
+				.getResultingTrajectories().size());
+		this.appendString(tracks, this.normal);
 	}
 
 	private void appendAdditionalPLInformation(

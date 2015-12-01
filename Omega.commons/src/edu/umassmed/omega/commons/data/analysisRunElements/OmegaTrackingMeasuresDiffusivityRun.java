@@ -23,6 +23,11 @@ public class OmegaTrackingMeasuresDiffusivityRun extends
 	private final Map<OmegaSegment, Double[]> gammaMap;
 	private final Map<OmegaSegment, Double[]> smssFromLogMap;
 	private final Map<OmegaSegment, Double[]> smssMap;
+	private final Map<OmegaSegment, Double[]> errorsMap;
+	private final Map<OmegaSegment, Double[]> errorsFromLogMap;
+
+	private final OmegaSNRRun snrRun;
+	private final OmegaTrackingMeasuresDiffusivityRun diffusivityRun;
 
 	public OmegaTrackingMeasuresDiffusivityRun(final OmegaExperimenter owner,
 			final OmegaAlgorithmSpecification algorithmSpec,
@@ -37,7 +42,11 @@ public class OmegaTrackingMeasuresDiffusivityRun extends
 			final Map<OmegaSegment, Double[]> gamma,
 			final Map<OmegaSegment, Double[]> gammaLog,
 			final Map<OmegaSegment, Double[]> smss,
-			final Map<OmegaSegment, Double[]> smssLog) {
+			final Map<OmegaSegment, Double[]> smssLog,
+			final Map<OmegaSegment, Double[]> errors,
+			final Map<OmegaSegment, Double[]> errorsLog,
+			final OmegaSNRRun snrRun,
+	        final OmegaTrackingMeasuresDiffusivityRun diffusivityRun) {
 		super(owner, algorithmSpec, segments);
 		this.nyMap = ny;
 		this.muMap = mu;
@@ -50,6 +59,10 @@ public class OmegaTrackingMeasuresDiffusivityRun extends
 		this.gammaFromLogMap = gammaLog;
 		this.smssMap = smss;
 		this.smssFromLogMap = smssLog;
+		this.errorsMap = errors;
+		this.errorsFromLogMap = errorsLog;
+		this.snrRun = snrRun;
+		this.diffusivityRun = diffusivityRun;
 	}
 
 	public OmegaTrackingMeasuresDiffusivityRun(final OmegaExperimenter owner,
@@ -65,7 +78,11 @@ public class OmegaTrackingMeasuresDiffusivityRun extends
 			final Map<OmegaSegment, Double[]> gamma,
 			final Map<OmegaSegment, Double[]> gammaLog,
 			final Map<OmegaSegment, Double[]> smss,
-			final Map<OmegaSegment, Double[]> smssLog) {
+			final Map<OmegaSegment, Double[]> smssLog,
+			final Map<OmegaSegment, Double[]> errors,
+			final Map<OmegaSegment, Double[]> errorsLog,
+			final OmegaSNRRun snrRun,
+	        final OmegaTrackingMeasuresDiffusivityRun diffusivityRun) {
 		super(owner, algorithmSpec, name, segments);
 		this.nyMap = ny;
 		this.muMap = mu;
@@ -78,6 +95,10 @@ public class OmegaTrackingMeasuresDiffusivityRun extends
 		this.gammaFromLogMap = gammaLog;
 		this.smssMap = smss;
 		this.smssFromLogMap = smssLog;
+		this.errorsMap = errors;
+		this.errorsFromLogMap = errorsLog;
+		this.snrRun = snrRun;
+		this.diffusivityRun = diffusivityRun;
 	}
 
 	public OmegaTrackingMeasuresDiffusivityRun(final OmegaExperimenter owner,
@@ -94,7 +115,11 @@ public class OmegaTrackingMeasuresDiffusivityRun extends
 			final Map<OmegaSegment, Double[]> gamma,
 			final Map<OmegaSegment, Double[]> gammaLog,
 			final Map<OmegaSegment, Double[]> smss,
-			final Map<OmegaSegment, Double[]> smssLog) {
+			final Map<OmegaSegment, Double[]> smssLog,
+	        final Map<OmegaSegment, Double[]> errors,
+			final Map<OmegaSegment, Double[]> errorsLog,
+			final OmegaSNRRun snrRun,
+	        final OmegaTrackingMeasuresDiffusivityRun diffusivityRun) {
 		super(owner, algorithmSpec, timeStamps, name, segments);
 		this.nyMap = ny;
 		this.muMap = mu;
@@ -107,6 +132,10 @@ public class OmegaTrackingMeasuresDiffusivityRun extends
 		this.gammaFromLogMap = gammaLog;
 		this.smssMap = smss;
 		this.smssFromLogMap = smssLog;
+		this.errorsMap = errors;
+		this.errorsFromLogMap = errorsLog;
+		this.snrRun = snrRun;
+		this.diffusivityRun = diffusivityRun;
 	}
 
 	public Map<OmegaSegment, Double[]> getNyResults() {
@@ -151,5 +180,21 @@ public class OmegaTrackingMeasuresDiffusivityRun extends
 
 	public Map<OmegaSegment, Double[]> getSmssResults() {
 		return this.smssMap;
+	}
+
+	public Map<OmegaSegment, Double[]> getErrorsResults() {
+		return this.errorsMap;
+	}
+
+	public Map<OmegaSegment, Double[]> getErrosFromLogResults() {
+		return this.errorsFromLogMap;
+	}
+
+	public OmegaSNRRun getSNRRun() {
+		return this.snrRun;
+	}
+
+	public OmegaTrackingMeasuresDiffusivityRun getTrackingMeasuresDiffusivityRun() {
+		return this.diffusivityRun;
 	}
 }

@@ -24,20 +24,22 @@ public class OmegaIntensityAnalyzer implements Runnable {
 	private final Map<OmegaSegment, Double[]> localSNRsMap;
 
 	public OmegaIntensityAnalyzer(
+	        final Map<OmegaTrajectory, List<OmegaSegment>> segments) {
+		this(null, segments);
+	}
+
+	public OmegaIntensityAnalyzer(
+			final OmegaMessageDisplayerPanelInterface displayerPanel,
 			final Map<OmegaTrajectory, List<OmegaSegment>> segments) {
-		this.segments = segments;
+		this.displayerPanel = displayerPanel;
+
+		this.segments = new LinkedHashMap<OmegaTrajectory, List<OmegaSegment>>(
+				segments);
 		this.peakSignalsMap = new LinkedHashMap<>();
 		this.meanSignalsMap = new LinkedHashMap<>();
 		this.localBackgroundsMap = new LinkedHashMap<>();
 		this.localSNRsMap = new LinkedHashMap<>();
 		this.displayerPanel = null;
-	}
-
-	public OmegaIntensityAnalyzer(
-	        final OmegaMessageDisplayerPanelInterface displayerPanel,
-	        final Map<OmegaTrajectory, List<OmegaSegment>> segments) {
-		this(segments);
-		this.displayerPanel = displayerPanel;
 	}
 
 	private void resetArray(final Double[] array) {
@@ -48,14 +50,15 @@ public class OmegaIntensityAnalyzer implements Runnable {
 
 	@Override
 	public void run() {
-		final int counter = 1;
+		int counter = 1;
 		final int max = this.segments.keySet().size();
 		for (final OmegaTrajectory track : this.segments.keySet()) {
 			final List<OmegaROI> rois = track.getROIs();
 			if (this.displayerPanel != null) {
 				this.updateStatusAsync(
-						"Processing trajectory " + track.getName() + " "
-								+ counter + "/" + max, false);
+				        "Processing intensity analysis, trajectory "
+				                + track.getName() + " " + counter + "/" + max,
+				        false, false);
 			}
 			for (final OmegaSegment segment : this.segments.get(track)) {
 				final Double[] peaks = new Double[3];
@@ -69,7 +72,7 @@ public class OmegaIntensityAnalyzer implements Runnable {
 				final int roiStart = rois.indexOf(segment.getStartingROI());
 				final int roiEnd = rois.indexOf(segment.getEndingROI());
 				final List<OmegaROI> segmentROIs = rois.subList(roiStart,
-						roiEnd);
+				        roiEnd + 1);
 				for (final OmegaROI roi : segmentROIs) {
 					// for (final OmegaROI roi : track.getROIs()) {
 					final OmegaParticle particle = (OmegaParticle) roi;
@@ -114,10 +117,12 @@ public class OmegaIntensityAnalyzer implements Runnable {
 				this.meanSignalsMap.put(segment, means);
 				this.localBackgroundsMap.put(segment, bgs);
 				this.localSNRsMap.put(segment, snrs);
+				counter++;
 			}
 		}
 		if (this.displayerPanel != null) {
-			this.updateStatusAsync("Processing ended", true);
+			this.updateStatusAsync("Processing intensity analysis ended", true,
+					false);
 		}
 	}
 
@@ -141,13 +146,15 @@ public class OmegaIntensityAnalyzer implements Runnable {
 		return this.localSNRsMap;
 	}
 
-	private void updateStatusSync(final String msg, final boolean ended) {
+	private void updateStatusSync(final String msg, final boolean ended,
+	        final boolean dialog) {
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
 				public void run() {
 					OmegaIntensityAnalyzer.this.displayerPanel
-					        .updateMessageStatus(new AnalyzerEvent(msg, ended));
+					.updateMessageStatus(new AnalyzerEvent(msg, ended,
+					                dialog));
 				}
 			});
 		} catch (final InvocationTargetException e) {
@@ -157,12 +164,14 @@ public class OmegaIntensityAnalyzer implements Runnable {
 		}
 	}
 
-	private void updateStatusAsync(final String msg, final boolean ended) {
+	private void updateStatusAsync(final String msg, final boolean ended,
+	        final boolean dialog) {
 		SwingUtilities.invokeLater(new Runnable() {
 			@Override
 			public void run() {
 				OmegaIntensityAnalyzer.this.displayerPanel
-				        .updateMessageStatus(new AnalyzerEvent(msg, ended));
+				.updateMessageStatus(new AnalyzerEvent(msg, ended,
+				                dialog));
 			}
 		});
 	}

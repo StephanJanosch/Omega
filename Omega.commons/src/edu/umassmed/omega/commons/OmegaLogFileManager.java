@@ -26,7 +26,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 
 	private static final String GENERAL_LOG_NAME = "OmegaLog_";
 	private static final String PLUGIN_LOG_NAME = OmegaLogFileManager.GENERAL_LOG_NAME
-			+ "Plugin_";
+	        + "Plugin_";
 
 	private final File logsDir;
 
@@ -41,13 +41,13 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 	}
 
 	public static void createNewOmegaFileManager(
-	        final OmegaGenericApplication app, final String workingDirName) {
+			final OmegaGenericApplication app, final String workingDirName) {
 		OmegaLogFileManager.instance = new OmegaLogFileManager(app,
-				workingDirName);
+		        workingDirName);
 	}
 
 	public static OmegaLogFileManager getOmegaLogFileManager(
-			final OmegaGenericApplication app) {
+	        final OmegaGenericApplication app) {
 		OmegaLogFileManager.instance.app = app;
 		return OmegaLogFileManager.instance;
 	}
@@ -57,7 +57,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 	}
 
 	private OmegaLogFileManager(final OmegaGenericApplication app,
-			final String workingDirName) {
+	        final String workingDirName) {
 		this.app = app;
 		this.logsDir = new File(workingDirName + File.separator + "logs");
 		if (!this.logsDir.exists()) {
@@ -66,13 +66,13 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		this.pluginLogFileMap = new HashMap<>();
 
 		final String fileName = this.logsDir.getPath() + File.separator
-				+ OmegaLogFileManager.GENERAL_LOG_NAME;
+		        + OmegaLogFileManager.GENERAL_LOG_NAME;
 		this.awtLogFile = new File(fileName + "awt.log");
 		this.generalUnhandledException = new File(fileName + "unhandled.log");
 		this.generalLogFile = new File(fileName + "core.log");
 
 		System.setProperty("sun.awt.exception.handler",
-				OmegaLogFileManager.class.getName());
+		        OmegaLogFileManager.class.getName());
 		Thread.currentThread().setUncaughtExceptionHandler(this);
 	}
 
@@ -83,7 +83,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		messages.add(msg);
 		for (final OmegaPlugin plugin : plugins) {
 			final File f = OmegaLogFileManager.instance
-					.createNewLogFile(plugin);
+			        .createNewLogFile(plugin);
 			OmegaLogFileManager.instance.pluginLogFileMap.put(plugin, f);
 			files.add(f);
 		}
@@ -110,7 +110,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 	}
 
 	public static void handleCause(final File f, final Throwable t,
-			final List<String> messages, final List<Throwable> throwables) {
+	        final List<String> messages, final List<Throwable> throwables) {
 		final String message = "Caused by: ";
 		if (OmegaLogFileManager.debug) {
 			System.err.println(message);
@@ -120,7 +120,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		throwables.add(t);
 		if (t.getCause() != null) {
 			OmegaLogFileManager.handleCause(f, t.getCause(), messages,
-					throwables);
+			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
 			OmegaLogFileManager.instance.terminateApplication();
@@ -140,7 +140,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		throwables.add(t);
 		if (t.getCause() != null) {
 			OmegaLogFileManager.handleCause(f, t.getCause(), messages,
-					throwables);
+			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
 			OmegaLogFileManager.instance.terminateApplication();
@@ -161,7 +161,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		throwables.add(t);
 		if (t.getCause() != null) {
 			OmegaLogFileManager.handleCause(f, t.getCause(), messages,
-					throwables);
+			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
 			OmegaLogFileManager.instance.terminateApplication();
@@ -172,7 +172,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		final List<String> messages = new ArrayList<>();
 		final List<Throwable> throwables = new ArrayList<>();
 		final String message = "Exception in thread: "
-				+ Thread.currentThread().getName();
+		        + Thread.currentThread().getName();
 		if (OmegaLogFileManager.debug) {
 			System.err.println(message);
 			t.printStackTrace();
@@ -182,7 +182,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		throwables.add(t);
 		if (t.getCause() != null) {
 			OmegaLogFileManager.handleCause(f, t.getCause(), messages,
-					throwables);
+			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
 			OmegaLogFileManager.instance.terminateApplication();
@@ -190,12 +190,12 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 	}
 
 	public static void handlePluginException(final OmegaPlugin plugin,
-			final Throwable t) {
+	        final Throwable t) {
 		final List<String> messages = new ArrayList<>();
 		final List<Throwable> throwables = new ArrayList<>();
 		final String message1 = "Exception in plugin: " + plugin.getName();
 		final String message2 = "Exception in thread: "
-				+ Thread.currentThread().getName();
+		        + Thread.currentThread().getName();
 		final String message = message1 + "\n" + message2;
 		if (OmegaLogFileManager.debug) {
 			System.err.println(message);
@@ -212,7 +212,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		throwables.add(t);
 		if (t.getCause() != null) {
 			OmegaLogFileManager.handleCause(f, t.getCause(), messages,
-					throwables);
+			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
 			OmegaLogFileManager.instance.terminateApplication();
@@ -224,7 +224,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		final List<Throwable> throwables = new ArrayList<>();
 		final String message1 = "Exception in core";
 		final String message2 = "Exception in thread: "
-				+ Thread.currentThread().getName();
+		        + Thread.currentThread().getName();
 		final String message = message1 + "\n" + message2;
 		if (OmegaLogFileManager.debug) {
 			System.err.println(message);
@@ -235,7 +235,7 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		final File f = OmegaLogFileManager.instance.generalLogFile;
 		if (t.getCause() != null) {
 			OmegaLogFileManager.handleCause(f, t.getCause(), messages,
-					throwables);
+			        throwables);
 		} else {
 			OmegaLogFileManager.instance.appendToLog(f, messages, throwables);
 			OmegaLogFileManager.instance.terminateApplication();
@@ -250,12 +250,12 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 
 	private File createNewLogFile(final OmegaPlugin plugin) {
 		final String logFileName = OmegaLogFileManager.PLUGIN_LOG_NAME
-				+ plugin.getName().replace(" ", "") + ".log";
+		        + plugin.getName().replace(" ", "") + ".log";
 		return new File(this.logsDir.getPath() + File.separator + logFileName);
 	}
 
 	public static void appendToPluginLog(final OmegaPlugin plugin,
-	        final String msg) {
+			final String msg) {
 		final List<String> messages = new ArrayList<>();
 		messages.add(msg);
 		File f = null;
@@ -272,14 +272,14 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 		final List<String> messages = new ArrayList<>();
 		messages.add(msg);
 		OmegaLogFileManager.instance.appendToLog(
-				OmegaLogFileManager.instance.generalLogFile, messages);
+		        OmegaLogFileManager.instance.generalLogFile, messages);
 	}
 
 	private void appendToLog(final File f, final List<String> messages) {
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+		        OmegaConstants.OMEGA_DATE_FORMAT);
 		final String timestamp = format
-				.format(Calendar.getInstance().getTime());
+		        .format(Calendar.getInstance().getTime());
 
 		File fTemp = null;
 		try {
@@ -314,11 +314,11 @@ public class OmegaLogFileManager implements UncaughtExceptionHandler {
 	}
 
 	private void appendToLog(final File f, final List<String> messages,
-			final List<Throwable> throwables) {
+	        final List<Throwable> throwables) {
 		final DateFormat format = new SimpleDateFormat(
-				OmegaConstants.OMEGA_DATE_FORMAT);
+		        OmegaConstants.OMEGA_DATE_FORMAT);
 		final String timestamp = format
-				.format(Calendar.getInstance().getTime());
+		        .format(Calendar.getInstance().getTime());
 
 		File fTemp = null;
 		try {
