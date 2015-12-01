@@ -45,6 +45,12 @@ import edu.umassmed.omega.omeroCommons.OmeroGateway;
 
 public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 
+	private static int counter = 0;
+
+	public static int getCounter() {
+		return OmeroListPanelProjectAndDatasetLoader.counter++;
+	}
+
 	// private final OmeroListPanel omeroProjectsPanel;
 	private final OmegaMessageDisplayerPanelInterface displayerPanel;
 	private final OmeroGateway gateway;
@@ -56,8 +62,8 @@ public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 	private final Map<ProjectData, List<DatasetData>> data;
 
 	public OmeroListPanelProjectAndDatasetLoader(
-			final OmegaMessageDisplayerPanelInterface displayerPanel,
-			final OmeroGateway gateway, final ExperimenterData expData) {
+	        final OmegaMessageDisplayerPanelInterface displayerPanel,
+	        final OmeroGateway gateway, final ExperimenterData expData) {
 		this.displayerPanel = displayerPanel;
 		this.gateway = gateway;
 		this.expData = expData;
@@ -72,13 +78,13 @@ public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 	public void run() {
 		try {
 			final List<ProjectData> projects = this.gateway
-					.getProjects(this.expData);
+			        .getProjects(this.expData);
 			this.projectToLoad = projects.size();
 			for (final ProjectData proj : projects) {
 				final int currentlyLoading = 1 + this.projectLoaded;
 				this.updateLoadingStatus(currentlyLoading);
 				final List<DatasetData> datasets = this.gateway
-						.getDatasets(proj);
+				        .getDatasets(proj);
 				this.data.put(proj, datasets);
 				this.projectLoaded++;
 			}
@@ -91,9 +97,9 @@ public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 
 	private void updateLoadingStatus(final int currentlyLoading) {
 		final String loadingStatus = currentlyLoading + "/"
-				+ this.projectToLoad + " loaded project(s) for "
-				+ this.expData.getFirstName() + " "
-				+ this.expData.getLastName();
+		        + this.projectToLoad + " loaded project(s) for "
+		        + this.expData.getFirstName() + " "
+		        + this.expData.getLastName();
 		try {
 			SwingUtilities.invokeAndWait(new Runnable() {
 				@Override
@@ -101,14 +107,14 @@ public class OmeroListPanelProjectAndDatasetLoader implements Runnable {
 
 					if (OmeroListPanelProjectAndDatasetLoader.this.projectLoaded == OmeroListPanelProjectAndDatasetLoader.this.projectToLoad) {
 						OmeroListPanelProjectAndDatasetLoader.this.displayerPanel
-						.updateMessageStatus(new OmeroDataMessageEvent(
-								loadingStatus,
-								OmeroListPanelProjectAndDatasetLoader.this.expData,
-								OmeroListPanelProjectAndDatasetLoader.this.data));
+						        .updateMessageStatus(new OmeroDataMessageEvent(
+						                loadingStatus,
+						                OmeroListPanelProjectAndDatasetLoader.this.expData,
+						                OmeroListPanelProjectAndDatasetLoader.this.data));
 					} else {
 						OmeroListPanelProjectAndDatasetLoader.this.displayerPanel
-						.updateMessageStatus(new OmegaMessageEvent(
-								loadingStatus));
+						        .updateMessageStatus(new OmegaMessageEvent(
+						                loadingStatus));
 					}
 				}
 			});

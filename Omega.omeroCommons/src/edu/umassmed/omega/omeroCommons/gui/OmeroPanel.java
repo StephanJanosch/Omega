@@ -87,7 +87,7 @@ OmeroAbstractBrowserInterface {
 
 	private JButton loadImages_butt, loadAndSelectImages_butt, close_butt;
 
-	private final OmeroGateway gateway;
+	private OmeroGateway gateway;
 
 	private final List<OmeroImageWrapper> imageWrapperToBeLoadedList;
 
@@ -96,8 +96,8 @@ OmeroAbstractBrowserInterface {
 	private int previousLoc;
 	private Dimension oldSplitPaneDimension;
 	private double dividerLocation;
-	
-	private boolean isMultiSelection;
+
+	private final boolean isMultiSelection;
 
 	// the collection of already loaded datasets
 	// TODO implement a caching system of loaded dataset to avoid loading each
@@ -108,7 +108,7 @@ OmeroAbstractBrowserInterface {
 		super(parent, plugin, index);
 
 		this.isMultiSelection = true;
-		
+
 		this.imageWrapperToBeLoadedList = new ArrayList<OmeroImageWrapper>();
 
 		this.gateway = gateway;
@@ -130,8 +130,8 @@ OmeroAbstractBrowserInterface {
 	public OmeroPanel(final RootPaneContainer parent, final OmeroGateway gateway) {
 		super(parent);
 
-		isMultiSelection = false;
-		
+		this.isMultiSelection = false;
+
 		this.imageWrapperToBeLoadedList = new ArrayList<OmeroImageWrapper>();
 
 		this.gateway = gateway;
@@ -172,7 +172,7 @@ OmeroAbstractBrowserInterface {
 		final List<JMenuItem> menuItems = new ArrayList<JMenuItem>();
 		ExperimenterData loggedUser;
 		try {
-			loggedUser = gateway.getExperimenter();
+			loggedUser = this.gateway.getExperimenter();
 		} catch (final omero.ServerError e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -180,7 +180,7 @@ OmeroAbstractBrowserInterface {
 		}
 		List<GroupData> groups;
 		try {
-			groups = gateway.getGroups();
+			groups = this.gateway.getGroups();
 		} catch (final omero.ServerError e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -191,7 +191,7 @@ OmeroAbstractBrowserInterface {
 			final JMenu menuItem = new JMenu(group.getName());
 			List<ExperimenterData> exps;
 			try {
-				exps = gateway.getExperimenters(group);
+				exps = this.gateway.getExperimenters(group);
 			} catch (final omero.ServerError e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -205,15 +205,17 @@ OmeroAbstractBrowserInterface {
 					public void actionPerformed(final ActionEvent evt) {
 						if (subMenuItem.isSelected()) {
 							try {
-								projectPanel.addExperimenterData(exp);
+								OmeroPanel.this.projectPanel
+								.addExperimenterData(exp);
 							} catch (final ServerError e) {
 								e.printStackTrace();
 							}
 						} else {
-							projectPanel.removeExperimenterData(exp);
+							OmeroPanel.this.projectPanel
+							.removeExperimenterData(exp);
 						}
-						checkSameUserInOtherGroups(
-						        menuItems, exp, subMenuItem.isSelected());
+						OmeroPanel.this.checkSameUserInOtherGroups(menuItems,
+								exp, subMenuItem.isSelected());
 					}
 				});
 				if (exp.getId() == loggedUser.getId()) {
@@ -224,19 +226,18 @@ OmeroAbstractBrowserInterface {
 			this.loadableUserMenu.add(menuItem);
 		}
 
-		projectPanel.resetExperimenterData();
+		this.projectPanel.resetExperimenterData();
 		try {
-			projectPanel.addExperimenterData(loggedUser);
+			this.projectPanel.addExperimenterData(loggedUser);
 		} catch (final ServerError ex) {
 			// TODO Auto-generated catch block
 			ex.printStackTrace();
 		}
-		projectPanel.updateTree(/* this.omegaData */);
+		this.projectPanel.updateTree(/* this.omegaData */);
 	}
-	
-	public void checkSameUserInOtherGroups(
-			final List<JMenuItem> menuItems, final ExperimenterData exp,
-			final boolean selected) {
+
+	public void checkSameUserInOtherGroups(final List<JMenuItem> menuItems,
+			final ExperimenterData exp, final boolean selected) {
 		final String name = exp.getFirstName() + " " + exp.getLastName();
 		for (int i = 0; i < menuItems.size(); i++) {
 			final JMenuItem menuItem = menuItems.get(i);
@@ -254,11 +255,12 @@ OmeroAbstractBrowserInterface {
 
 	public void createAndAddWidgets() {
 		this.projectPanel = new OmeroTreeBrowserPanel(
-				this.getParentContainer(), this, this.gateway, isMultiSelection);
+				this.getParentContainer(), this, this.gateway,
+				this.isMultiSelection);
 		final JScrollPane scrollPaneList = new JScrollPane(this.projectPanel);
 
 		this.browserPanel = new OmeroBrowserPanel(this.getParentContainer(),
-				this, this.gateway, isMultiSelection);
+				this, this.gateway, this.isMultiSelection);
 
 		this.mainPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		this.mainPanel.setLeftComponent(scrollPaneList);
@@ -309,7 +311,7 @@ OmeroAbstractBrowserInterface {
 				} catch (final ServerError ex) {
 					ex.printStackTrace();
 					return;
-				} catch (IOException ex) {
+				} catch (final IOException ex) {
 					ex.printStackTrace();
 					return;
 				}
@@ -420,7 +422,7 @@ OmeroAbstractBrowserInterface {
 			} catch (final ServerError ex) {
 				// TODO handle error
 				ex.printStackTrace();
-			} catch (IOException ex) {
+			} catch (final IOException ex) {
 				// TODO Auto-generated catch block
 				ex.printStackTrace();
 			}
@@ -452,9 +454,10 @@ OmeroAbstractBrowserInterface {
 					.getWrappers());
 		} else if (evt instanceof OmeroDataMessageEvent) {
 			final OmeroDataMessageEvent specificEvent = (OmeroDataMessageEvent) evt;
-			projectPanel.updateOmeData(specificEvent.getExperimenterData(),
+			this.projectPanel.updateOmeData(
+					specificEvent.getExperimenterData(),
 					specificEvent.getData());
-			projectPanel.updateTree(/* this.omegaData */);
+			this.projectPanel.updateTree(/* this.omegaData */);
 		}
 	}
 
@@ -491,5 +494,11 @@ OmeroAbstractBrowserInterface {
 	@Override
 	public void onCloseOperation() {
 		// TODO Auto-generated method stub
+	}
+
+	public void setGateway(final OmeroGateway gateway) {
+		this.gateway = gateway;
+		this.projectPanel.setGateway(gateway);
+		this.browserPanel.setGateway(gateway);
 	}
 }

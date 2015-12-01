@@ -75,18 +75,13 @@ import edu.umassmed.omega.omeroCommons.data.OmeroImageWrapper;
 import edu.umassmed.omega.omeroCommons.data.OmeroThumbnailImageInfo;
 import edu.umassmed.omega.omeroCommons.runnable.OmeroBrowerPanelImageLoader;
 
-/**
- * JPanel to display the images in the OMERO datasets thumbnailed.
- *
- * @author galliva
- */
 public class OmeroBrowserPanel extends GenericPanel {
 	private static final long serialVersionUID = 7625488987526070516L;
 
 	private boolean isListView;
 
 	private final OmeroAbstractBrowserInterface browserPanel;
-	private final OmeroGateway gateway;
+	private OmeroGateway gateway;
 
 	private JPanel mainPanel;
 	private JRadioButton gridView_btt, listView_btt;
@@ -271,7 +266,8 @@ public class OmeroBrowserPanel extends GenericPanel {
 				if (imageWrapperList.isEmpty()) {
 					this.imageToBeLoadedList.remove(this.datasetWrapper);
 				}
-				this.browserPanel.updateDatasetSelection(imageWrapperList.size());
+				this.browserPanel.updateDatasetSelection(imageWrapperList
+						.size());
 			}
 		} else {
 			if ((this.imageToBeLoadedList.size() >= 1)
@@ -510,8 +506,9 @@ public class OmeroBrowserPanel extends GenericPanel {
 		checkPanel.setPreferredSize(checkPanelDim);
 		final JCheckBox checked = new JCheckBox();
 		checked.setBackground(Color.white);
-		if(imageToBeLoadedList.containsKey(datasetWrapper)) {
-			if(imageToBeLoadedList.get(datasetWrapper).contains(temp.getImage())) {
+		if (this.imageToBeLoadedList.containsKey(this.datasetWrapper)) {
+			if (this.imageToBeLoadedList.get(this.datasetWrapper).contains(
+					temp.getImage())) {
 				checked.setSelected(true);
 			}
 		}
@@ -572,11 +569,13 @@ public class OmeroBrowserPanel extends GenericPanel {
 
 		final JCheckBox checked = new JCheckBox();
 		checked.setBackground(Color.white);
-		if(imageToBeLoadedList.containsKey(datasetWrapper)) {
-			List<OmeroImageWrapper> imageWrapperList = imageToBeLoadedList.get(datasetWrapper);
-			for(OmeroImageWrapper wrap : imageWrapperList) {
-				if(imageName == wrap.getName())
+		if (this.imageToBeLoadedList.containsKey(this.datasetWrapper)) {
+			final List<OmeroImageWrapper> imageWrapperList = this.imageToBeLoadedList
+					.get(this.datasetWrapper);
+			for (final OmeroImageWrapper wrap : imageWrapperList) {
+				if (imageName == wrap.getName()) {
 					checked.setSelected(true);
+				}
 			}
 		}
 		// checked.setSelected(omegaData.containsImage(temp.getImageID()));
@@ -743,15 +742,15 @@ public class OmeroBrowserPanel extends GenericPanel {
 		this.datasetStatus = datasetStatus;
 		this.updating = true;
 		if (datasetStatus == CheckBoxStatus.INDETERMINATE) {
-			updating = false;
+			this.updating = false;
 			return;
 		}
-		for(final JCheckBox checkbox : this.checkboxList) {
-				if (datasetStatus == CheckBoxStatus.SELECTED) {
-					checkbox.setSelected(true);
-				} else {
-					checkbox.setSelected(false);
-				}
+		for (final JCheckBox checkbox : this.checkboxList) {
+			if (datasetStatus == CheckBoxStatus.SELECTED) {
+				checkbox.setSelected(true);
+			} else {
+				checkbox.setSelected(false);
+			}
 		}
 		this.updating = false;
 	}
@@ -766,17 +765,22 @@ public class OmeroBrowserPanel extends GenericPanel {
 
 	public void updateLoadedElements(final List<OmegaImage> loadedImages) {
 		this.loadedImages.clear();
-		if(loadedImages != null)
+		if (loadedImages != null) {
 			this.loadedImages.addAll(loadedImages);
+		}
 		this.imageToBeLoadedList.clear();
 		this.redrawImagePanels();
 	}
-	
+
 	public void clearImagesToBeLoadedList() {
-		imageToBeLoadedList.clear();
+		this.imageToBeLoadedList.clear();
 	}
 
 	public boolean isMultiSelection() {
 		return this.isMultiSelection;
+	}
+
+	public void setGateway(final OmeroGateway gateway) {
+		this.gateway = gateway;
 	}
 }
