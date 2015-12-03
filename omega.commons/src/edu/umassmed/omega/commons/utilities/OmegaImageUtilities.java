@@ -2,11 +2,8 @@ package edu.umassmed.omega.commons.utilities;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import loci.common.DataTools;
 
 public class OmegaImageUtilities {
 
@@ -23,56 +20,60 @@ public class OmegaImageUtilities {
 		return newImage;
 	}
 
-	public static short[] convertBytesToShortImage(int byteWidth, final byte[] pixels) {
-		final short[] data = new short[pixels.length / byteWidth];
-		for (int j = 0; j < data.length; j++) {
-			final byte[] val = new byte[byteWidth];
-			for(int i=0;i<byteWidth;i++) {
-				val[i] = pixels[byteWidth * j + i];
-			}
-			data[j] = DataTools.bytesToShort(val, true);
-		}
-		return data;
-	}
-
-	public static float[] convertBytesToFloatImage(int byteWidth, final byte[] pixels) {
-		final float[] data = new float[pixels.length / byteWidth];
-		for (int j = 0; j < data.length; j++) {
-			final byte[] val = new byte[byteWidth];
-			for(int i=0;i<byteWidth;i++) {
-				val[i] = pixels[byteWidth * j + i];
-			}
-			data[j] = DataTools.bytesToFloat(val, true);
-		}
-		return data;
-	}
-
-	public static int[] convertBytesToIntImage(int byteWidth, final byte[] pixels) {
-		final int[] data = new int[pixels.length / byteWidth];
-		for (int j = 0; j < data.length; j++) {
-			final byte[] val = new byte[byteWidth];
-			for(int i=0;i<byteWidth;i++) {
-				val[i] = pixels[byteWidth * j + i];
-			}
-			data[j] = DataTools.bytesToInt(val, true);
-		}
-		return data;
-	}
-
-	public static double[] convertBytesToDoubleImage(int byteWidth, final byte[] pixels) {
-		final double[] data = new double[pixels.length / byteWidth];
-		for (int j = 0; j < data.length; j++) {
-			final byte[] val = new byte[byteWidth];
-			for(int i=0;i<byteWidth;i++) {
-				val[i] = pixels[byteWidth * j + i];
-			}
-			data[j] = DataTools.bytesToDouble(val, true);
-		}
-		return data;
-	}
+	// public static short[] convertBytesToShortImage(int byteWidth, final
+	// byte[] pixels) {
+	// final short[] data = new short[pixels.length / byteWidth];
+	// for (int j = 0; j < data.length; j++) {
+	// final byte[] val = new byte[byteWidth];
+	// for(int i=0;i<byteWidth;i++) {
+	// val[i] = pixels[byteWidth * j + i];
+	// }
+	// data[j] = DataTools.bytesToShort(val, true);
+	// }
+	// return data;
+	// }
+	//
+	// public static float[] convertBytesToFloatImage(int byteWidth, final
+	// byte[] pixels) {
+	// final float[] data = new float[pixels.length / byteWidth];
+	// for (int j = 0; j < data.length; j++) {
+	// final byte[] val = new byte[byteWidth];
+	// for(int i=0;i<byteWidth;i++) {
+	// val[i] = pixels[byteWidth * j + i];
+	// }
+	// data[j] = DataTools.bytesToFloat(val, true);
+	// }
+	// return data;
+	// }
+	//
+	// public static int[] convertBytesToIntImage(int byteWidth, final byte[]
+	// pixels) {
+	// final int[] data = new int[pixels.length / byteWidth];
+	// for (int j = 0; j < data.length; j++) {
+	// final byte[] val = new byte[byteWidth];
+	// for(int i=0;i<byteWidth;i++) {
+	// val[i] = pixels[byteWidth * j + i];
+	// }
+	// data[j] = DataTools.bytesToInt(val, true);
+	// }
+	// return data;
+	// }
+	//
+	// public static double[] convertBytesToDoubleImage(int byteWidth, final
+	// byte[] pixels) {
+	// final double[] data = new double[pixels.length / byteWidth];
+	// for (int j = 0; j < data.length; j++) {
+	// final byte[] val = new byte[byteWidth];
+	// for(int i=0;i<byteWidth;i++) {
+	// val[i] = pixels[byteWidth * j + i];
+	// }
+	// data[j] = DataTools.bytesToDouble(val, true);
+	// }
+	// return data;
+	// }
 
 	public static int[] convertByteToIntImage(final int byteWidth,
-			final byte[] pixels) {
+	        final byte[] pixels) {
 		int[] data = null;
 		// Manage the right amount of byte per pixels
 		switch (byteWidth) {
@@ -121,16 +122,16 @@ public class OmegaImageUtilities {
 		}
 		return data;
 	}
-	
+
 	public static byte[] convertByteToByte(final int byteWidth,
-			final byte[] pixels) {
-		ByteBuffer byteBuffer = ByteBuffer.wrap(pixels);
+	        final byte[] pixels) {
+		final ByteBuffer byteBuffer = ByteBuffer.wrap(pixels);
 		byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 		return byteBuffer.array();
 	}
 
 	public static Integer[] convertByteToIntegerImage(final int byteWidth,
-			final byte[] pixels) {
+	        final byte[] pixels) {
 		Integer[] data = null;
 
 		// Manage the right amount of byte per pixels
@@ -182,7 +183,7 @@ public class OmegaImageUtilities {
 	}
 
 	public static Integer[] getValueSmaller(final Integer[] image,
-			final double threshold) {
+	        final double threshold) {
 		final List<Integer> smallerValues = new ArrayList<>();
 		for (final int val : image) {
 			if (val < threshold) {
@@ -193,7 +194,7 @@ public class OmegaImageUtilities {
 	}
 
 	public static Double[] getValueSmaller(final Double[] image,
-			final double threshold) {
+	        final double threshold) {
 		final List<Double> smallerValues = new ArrayList<>();
 		for (final double val : image) {
 			if (val < threshold) {
