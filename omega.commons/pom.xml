@@ -4,27 +4,14 @@
 		http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>ome</groupId>
-		<artifactId>pom-omero-client</artifactId>
-		<version>5.1.11</version>
-	</parent>
-
 	<groupId>edu.umassmed.omega</groupId>
-	<artifactId>omero.commons</artifactId>
+	<artifactId>commons</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>omero.commons</name>
+	<name>omega.commons</name>
 	<description>TBD</description>
 	<url>TBD</url>
-
-	<repositories>
-		<repository>
-			<id>imagej.public</id>
-			<url>http://maven.imagej.net/content/groups/public</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -34,18 +21,30 @@
 			<version>4.11</version>
 		</dependency>
 		<dependency>
-			<groupId>omero</groupId>
-			<artifactId>blitz</artifactId>
+			<groupId>flanagan</groupId>
+			<artifactId>flanagan</artifactId>
+			<version>1</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/flanagan.jar</systemPath>
 		</dependency>
 		<dependency>
-			<groupId>edu.umassmed.omega</groupId>
-			<artifactId>commons</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>jcommon</groupId>
+			<artifactId>jcommon</artifactId>
+			<version>1.0.16</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/jfreechart/jcommon-1.0.16.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>jfreechart</groupId>
+			<artifactId>jfreechart</artifactId>
+			<version>1.0.13</version>
+			<scope>system</scope>
+			<systemPath>${basedir}/lib/jfreechart/jfreechart-1.0.13.jar</systemPath>
 		</dependency>
 	</dependencies>
 
 	<build>
-		<finalName>omega.omero.commons-${version}</finalName>
+		<finalName>omega.commons-${version}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
